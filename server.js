@@ -5,10 +5,11 @@
 
 //call the needed packages
 var mongoose = require('mongoose'); // calls mongoose
-mongoose.connect('mongodb://james:james@ds161016.mlab.com:61016/firstdb');
+mongoose.connect('mongodb://james:james@ds141796.mlab.com:41796/api-bears');
 // Handle the connection event
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
+
 db.once('open', function () {
     console.log("DB connection alive");
 });
