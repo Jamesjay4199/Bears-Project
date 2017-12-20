@@ -5,8 +5,14 @@
 
 //call the needed packages
 var mongoose = require('mongoose'); // calls mongoose
-mongoose.connect('mongodb://Jamesjay:James    1@ds161016.mlab.com:61016/firstdb');
+mongoose.connect('mongodb://james:james@ds141796.mlab.com:41796/api-bears');
+// Handle the connection event
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
 
+db.once('open', function () {
+    console.log("DB connection alive");
+});
 var express = require('express');	 //calls express
 var app = express();				 // define app using express					
 var bodyParser = require('body-parser');
@@ -38,7 +44,37 @@ router.get('/', function(req, res){
 
 // more routes for our api will happen here
 
-//register our routes ----------------------------------------------------------------
+//on routes that end in /bears
+//---------------------------------------------------------------------------
+router.route('/bears')
+
+    // create a bear (accessed at POST http://localhost:8080/api/bears)
+    .post(function (req, res) {
+
+        var bear = new Bear();      // create a new instance of the Bear model
+        bear.name = req.body.name;  // set the bears name (comes from the request)
+
+        // save the bear and check for errors
+        bear.save(function (err) {
+            if (err)
+                res.send(err);
+
+            res.json({ message: 'Bear created!' });
+        });
+
+    })
+
+    //get all the bears (accessed at GET http://localhost:8080/api/bears)
+    .get(function(req, res){
+        Bear.find(function (err, bears) {
+            if (err) 
+                res.send(err);
+            
+            res.json(bears);
+        });
+    });
+    
+    //register our routes ----------------------------------------------------------------
 //all of our routes will be prefixed with /api
 app.use('/api', router);
 
